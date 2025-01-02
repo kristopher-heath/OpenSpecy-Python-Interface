@@ -11,17 +11,41 @@ The OpenSpecy R package, however, can process all top *n* matches consecutively 
 Thus was the beginning of the **OpenSpecy-Python-Interface**, an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
 
 ---
-## Installation
-
+## Setup and Installation
+**R Installation and Configuration**
+* Download and install the most recent version of [R](https://cran.r-project.org/) for your OS
+  - Note: R must be installed directly to your device, not inside an environment
+* Open up the RGUI
+* In the R Console, run the following:
 ```bash
-TBD
+install.packages('OpenSpecy', repos='http://cran.us.r-project.org')
 ```
+* Once OpenSpecy is installed, run the following code to install the spectral libraries:
+```bash
+library(OpenSpecy)
+get_lib()
+```
+* Exit the RGUI window
+---
+**Python Installation**
+* Create a new environment in Anaconda
+* Run the following in the environment terminal:
+```bash
+pip install openspecy-python-interface
+```
+* Run Python in the IDE of your choice
+* Use the package as outlined
 
+---
+## Notes
 ---
 ## Usage
 
 ```python
-TBD
+import openspecy-python-interface as osi
+from osi import main
+
+
 ```
 
 ---
