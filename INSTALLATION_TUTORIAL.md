@@ -1,3 +1,6 @@
+# Installation Tutorial
+This is a step-by-step walkthrough for users who aren't as familiar with using R and Python
+
 ##R Installation
 1. Navigate to [https://cran.r-project.org/](https://cran.r-project.org/) and click the link to download R for your platform.
 2. Once you have selected and downloaded your desired version, navigate to the downloaded .exe file and execute it.
