@@ -5,6 +5,7 @@ This is a step-by-step walkthrough for users who aren't as familiar with using R
 1. Navigate to [https://cran.r-project.org/](https://cran.r-project.org/) and click the link to download R for your platform.
 2. Once you have selected and downloaded your desired version, navigate to the downloaded .exe file and execute it.
 3. Follow the on-screen instructions to set up R.
+   * If you are using a work computer, make sure to install R in a place that you have read/write privileges. This is necessary for later steps when Python will need to access R libraries
 
 ## R Configuration
 1. Once installation is complete, open R.
@@ -28,8 +29,12 @@ R.home()
 ```
    * Copy and paste the outputted path somewhere. This will be needed later.
 ![find R_home var](instruction_pics/r_home.png "r_home")
+   * Note that in this screenshot, the path is outputted in shorthand. In this case, it corresponds to "C:/Program Files/R/R-4.4.2"
+5. Navigate to your `R_HOME` path. Double check that this folder has a 'bin' folder, which contains 'R.exe'
+   * If it does not contain the 'bin' folder, look through your other files until you find a bin folder that contains 'R.exe' and copy and paste the file path of the parent directory (the folder that contains the 'bin' folder) somewhere for later
+![navigate to the r_home path](instruction_pics/r_home_path.png "r_home_path")![open the bin folder](instruction_pics/r_exe.png "r_exe")
 
-5. Exit out of R. You will be prompted with "Save workspace image?" This is to save any user-defined objects. Because we have not defined anything, it does not matter if you select "yes" or "no"
+6. Exit out of R. You will be prompted with "Save workspace image?" This is to save any user-defined objects. Because we have not defined anything, it does not matter if you select "yes" or "no"
 
 ## Anaconda Installation and Setup
 
