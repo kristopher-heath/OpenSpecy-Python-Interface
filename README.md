@@ -12,6 +12,8 @@ Thus was the beginning of the **OpenSpecy-Python-Interface**, an all-in-one spec
 
 ---
 ## Setup and Installation
+Note: This is a brief overview of the setup process. For a step-by-step walkthrough, please see the [Installation Tutorial](INSTALLATION_TUTORIAL.md).
+
 **R Installation and Configuration**
 * Download and install the most recent version of [R](https://cran.r-project.org/) for your OS
   - Note: R must be installed directly to your device, not inside an environment
@@ -24,6 +26,10 @@ install.packages('OpenSpecy', repos='http://cran.us.r-project.org')
 ```bash
 library(OpenSpecy)
 get_lib()
+```
+* Run one last line in the console to get the `R_HOME` variable. Copy and paste it somewhere for later, as it will be necessary to define when using this package.
+```bash
+R.home()
 ```
 * Exit the RGUI window
 ---
@@ -47,7 +53,6 @@ from osi import main
 
 
 ```
-
 ---
 ## Contributing
 
