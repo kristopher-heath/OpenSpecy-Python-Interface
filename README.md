@@ -48,9 +48,11 @@ pip install openspecy-python-interface
 ## Usage
 
 ```python
+import os
+os.environ['R_HOME'] = # YOUR R_HOME PATH HERE
+
 import openspecy-python-interface as osi
 from osi import main
-
 
 ```
 ---
