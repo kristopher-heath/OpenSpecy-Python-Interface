@@ -25,6 +25,9 @@ jobs:
         pip install -r requirements.txt
     - name: Install pypa/build
       run: python3 -m pip install build
+    - name: Ensure requirements.txt exists
+      run: |
+        if [ ! -f requirements.txt ]; then echo "requirements.txt not found!"; exit 1; fi
     - name: Build a binary wheel and a source tarball
       run: python3 -m build
     - name: Store the distribution packages
