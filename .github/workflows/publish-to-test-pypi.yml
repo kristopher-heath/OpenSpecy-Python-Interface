@@ -15,10 +15,10 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.11"
-    - name: Install R (required for rpy2)
+    - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y r-base
+        sudo apt-get install -y r-base libtirpc-dev libcurl4-openssl-dev libssl-dev
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -32,7 +32,7 @@ jobs:
       with:
         name: python-package-distributions
         path: dist/
-  
+
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
     needs:
