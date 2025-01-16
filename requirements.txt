@@ -1,5 +1,5 @@
-setuptools>=42
-wheel
+setuptools>=42,<50
+wheel>=0.36.0
 openpyxl>=3.1.5
 pandas>=2.2.3
 rpy2==3.5.16
