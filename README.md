@@ -12,7 +12,7 @@ Thus was the beginning of the **OpenSpecy-Python-Interface**, an all-in-one spec
 
 ---
 ## Setup and Installation
-Note: This is a brief overview of the setup process. For a step-by-step walkthrough, please see the [Installation Tutorial](INSTALLATION_TUTORIAL.md).
+Note: This is a brief overview of the setup process. For a step-by-step walkthrough, please see the [Installation Tutorial](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/INSTALLATION_TUTORIAL.md).
 
 **R Installation and Configuration**
 * Download and install the most recent version of [R](https://cran.r-project.org/) for your OS
