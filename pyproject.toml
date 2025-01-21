@@ -21,8 +21,10 @@ classifiers = [
   "Programming Language :: Python"
 ]
 
-[tool.setuptools.dynamic]
+[tool.setuptools]
 packages = ["openspecy"]
+
+[tool.setuptools.dynamic]
 version = {attr = "openspecy.__version__"}  # any module attribute compatible with ast.literal_eval
 dependencies = {file = ["requirements.txt"]}
 
