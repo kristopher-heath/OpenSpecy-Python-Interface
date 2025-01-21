@@ -2,9 +2,6 @@
 requires = ["setuptools >= 75.6.0"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.dynamic]
-version = {attr = "my_package.__version__"}  # any module attribute compatible with ast.literal_eval
-dependencies = {file = ["requirements.txt"]}
 
 [project]
 name = "openspecy_python_interface"
@@ -16,15 +13,17 @@ authors = [
   {name = "Kristopher Heath", email = "kheath@nrel.gov"}
 ]
 description = "This package is designed to easily interface with the OpenSpecy package for R. Python is used for file preprocessing and post-processing, and OpenSpecy is accessed by executing R from Python."
-readme = {file = "README.txt", content-type = "text/markdown"}
-license = "MIT"
-license-files = ["LICENCSE.md"]
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {text = "MIT"}
 keywords = ["openspecy"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Programming Language :: Python"
 ]
 
+[tool.setuptools.dynamic]
+version = {attr = "openspecy.__version__"}  # any module attribute compatible with ast.literal_eval
+dependencies = {file = ["requirements.txt"]}
 
 [project.urls]
 Homepage = "https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface"
