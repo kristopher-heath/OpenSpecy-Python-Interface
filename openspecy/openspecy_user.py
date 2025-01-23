@@ -6,7 +6,7 @@ import shutil
 import rpy2.robjects as ro
 import rpy2.robjects.pandas2ri as pandas2ri
 
-from openspecy_utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
+from .openspecy_utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
 
 def process_csv_files(folder_path, range_min, range_max):
     """
