@@ -4,95 +4,58 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    name: Build distribution 📦
+  publish:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-      with:
-        persist-credentials: false
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.11"
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y r-base libtirpc-dev libcurl4-openssl-dev libssl-dev
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Install pypa/build
-      run: python3 -m pip install build
-    - name: Ensure requirements.txt exists
-      run: |
-        if [ ! -f requirements.txt ]; then echo "requirements.txt not found!"; exit 1; fi
-    - name: Build a binary wheel and a source tarball
-      run: python -m build --sdist --wheel --outdir dist/
-    - name: Store the distribution packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
+      - uses: actions/checkout@v2
 
-  publish-to-testpypi:
-    name: Publish Python 🐍 distribution 📦 to TestPyPI
-    needs:
-    - build
-    runs-on: ubuntu-latest
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
 
-    environment:
-      name: testpypi
-      url: https://test.pypi.org/p/openspecy_python_interface
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install setuptools wheel
 
-    permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
+      - name: Build package
+        run: |
+          python setup.py sdist bdist_wheel
 
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Publish distribution 📦 to TestPyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository-url: https://test.pypi.org/legacy/
+      - name: Install Sigstore Cosign
+        run: |
+          curl -LO https://github.com/sigstore/cosign/releases/download/v1.4.1/cosign-linux-amd64
+          chmod +x cosign-linux-amd64
+          sudo mv cosign-linux-amd64 /usr/local/bin/cosign
 
+      - name: Extract version
+        id: get_version
+        run: |
+          VERSION=$(python setup.py --version)
+          echo "::set-output name=VERSION::$VERSION"
 
-  github-release:
-    name: >-
-      Sign the Python 🐍 distribution 📦 with Sigstore
-      and upload them to GitHub Release
-    needs:
-    - publish-to-testpypi
-    runs-on: ubuntu-latest
+      - name: Sign the artifacts with Sigstore
+        run: |
+          cosign sign-blob --key cosign.key dist/openspecy_python_interface-${{ steps.get_version.outputs.VERSION }}.tar.gz
+          cosign sign-blob --key cosign.key dist/openspecy_python_interface-${{ steps.get_version.outputs.VERSION }}-py3-none-any.whl
 
-    permissions:
-      contents: write  # IMPORTANT: mandatory for making GitHub Releases
-      id-token: write  # IMPORTANT: mandatory for sigstore
+      - name: Check for existing release
+        run: |
+          if gh release view v${{ steps.get_version.outputs.VERSION }}; then
+            gh release delete v${{ steps.get_version.outputs.VERSION }} -y
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    steps:
-    - name: Download all the dists
-      uses: actions/download-artifact@v4
-      with:
-        name: python-package-distributions
-        path: dist/
-    - name: Sign the dists with Sigstore
-      uses: sigstore/gh-action-sigstore-python@v3.0.0
-      with:
-        inputs: >-
-          ./dist/*.tar.gz
-          ./dist/*.whl
-    - name: Create GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: |
-        gh release create v${{ steps.get_version.outputs.VERSION }} dist/*.whl dist/*.tar.gz --repo KrisHeathNREL/OpenSpecy-Python-Interface --notes "Release v${{ steps.get_version.outputs.VERSION }}"
-    - name: Upload artifact signatures to GitHub Release
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      run: |
-        gh release upload v${{ steps.get_version.outputs.VERSION }} dist/** --repo KrisHeathNREL/OpenSpecy-Python-Interface
+      - name: Create GitHub release
+        run: |
+          gh release create v${{ steps.get_version.outputs.VERSION }} dist/*.whl dist/*.tar.gz --repo KrisHeathNREL/OpenSpecy-Python-Interface --notes "Release v${{ steps.get_version.outputs.VERSION }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload signed artifacts
+        run: |
+          gh release upload v${{ steps.get_version.outputs.VERSION }} dist/*.sigstore.json --repo KrisHeathNREL/OpenSpecy-Python-Interface
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
