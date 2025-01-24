@@ -1,6 +1,7 @@
-name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+name: Publish Python 🐍 distribution 📦 to TestPyPI
 
-on: push
+on:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -89,9 +90,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: |
-        gh release create v1.0.0 dist/*.whl dist/*.tar.gz --repo ${{ github.repository }} --notes "Release v1.0.0"
+        gh release create v${{ steps.get_version.outputs.VERSION }} dist/*.whl dist/*.tar.gz --repo KrisHeathNREL/OpenSpecy-Python-Interface --notes "Release v${{ steps.get_version.outputs.VERSION }}"
     - name: Upload artifact signatures to GitHub Release
       env:
         GITHUB_TOKEN: ${{ github.token }}
       run: |
-        gh release upload v1.0.0 dist/** --repo ${{ github.repository }}
+        gh release upload v${{ steps.get_version.outputs.VERSION }} dist/** --repo KrisHeathNREL/OpenSpecy-Python-Interface
