@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'OpenSpecy R-Python Interface'
+project = 'OpenSpecy Python Interface'
 copyright = '2024, Kristopher Heath'
 author = 'Kristopher Heath'
 release = '1.0.0'
@@ -21,7 +21,7 @@ import os
 #
 # sys.path.insert(0, str(Path('', 'src').resolve()))
 # =============================================================================
-sys.path.insert(0, os.path.abspath(r"C:\Users\kheath\.spyder-py3\Scripts\For GitHub"))
+# sys.path.insert(0, os.path.abspath(r"C:\Users\kheath\.spyder-py3\Scripts\For GitHub"))
 
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
 
