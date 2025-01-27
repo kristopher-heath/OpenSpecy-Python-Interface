@@ -1,2 +1,2 @@
-.. automodule:: openspecy_rscript_processing
+.. automodule:: openspecy_user
    :members:
