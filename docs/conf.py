@@ -25,7 +25,7 @@ import os
 
 extensions = ['sphinx.ext.napoleon', 'autoapi.extension']
 
-autoapi_dirs = ['/openspecy']
+autoapi_dirs = ['../openspecy']
 
 templates_path = ['_templates']
 exclude_patterns = []
