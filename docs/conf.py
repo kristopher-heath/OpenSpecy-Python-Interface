@@ -23,7 +23,9 @@ import os
 # =============================================================================
 # sys.path.insert(0, os.path.abspath(r"C:\Users\kheath\.spyder-py3\Scripts\For GitHub"))
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+extensions = ['sphinx.ext.napoleon', 'autoapi.extension']
+
+autoapi_dirs = ['/openspecy']
 
 templates_path = ['_templates']
 exclude_patterns = []
