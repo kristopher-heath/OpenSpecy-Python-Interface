@@ -16,7 +16,7 @@ sphinx:
 
 # Set environment variables
 env:
-  RPY2_CFFI_MODE: ABI
+  RPY2_CFFI_MODE: "ABI"
 
 # Optionally, but recommended,
 # declare the Python requirements required to build your documentation
