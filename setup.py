@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 import configparser
-import os
-os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"
 
 config = configparser.ConfigParser()
 config.read("setup.cfg")
