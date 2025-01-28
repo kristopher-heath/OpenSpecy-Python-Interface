@@ -14,12 +14,14 @@ build:
 sphinx:
    configuration: docs/conf.py
 
-export RPY2_CFFI_MODE=ABI
+# Set environment variables
+env:
+  RPY2_CFFI_MODE: ABI
 
 # Optionally, but recommended,
 # declare the Python requirements required to build your documentation
 # See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
-   install:
-   - method: pip
-     path: .
+  install:
+    - method: pip
+      path: .
