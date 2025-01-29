@@ -14,7 +14,7 @@ with open("requirements.txt") as f:
     print(required)
 
 setup(
-    name="openspecypythoninterface",
+    name="openspi",
     version=__version__,
     description="""This package is designed to easily interface with the OpenSpecy package for R. Python is used for file preprocessing and post-processing, and OpenSpecy is accessed by executing R from Python.""",
     long_description=long_description,

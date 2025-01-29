@@ -6,7 +6,8 @@ import shutil
 import rpy2.robjects as ro
 import rpy2.robjects.pandas2ri as pandas2ri
 
-from .openspecy_utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
+from .metadata import _xlsx_metadata
+from .utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
 
 def process_csv_files(folder_path, range_min, range_max):
     """
@@ -36,6 +37,11 @@ def process_csv_files(folder_path, range_min, range_max):
 
     """
 
+    if range_max <= range_min:
+        print(
+            f"Error. Specified range is incompatible. range_min must be less than range_max.\nCurrent values:\nrange_min: {range_min}\nrange_max: {range_max}"
+        )
+        sys.exit()
     try:
         # For each file in the folder:
         for filename in os.listdir(folder_path):
@@ -348,5 +354,6 @@ def openspecy_main(source_folder, range_min, range_max, export_xlsx, export_dir 
 
     target_file_path = os.path.join(export_dir, export_xlsx)
     zipped_path = process_csv_files(source_folder, range_min, range_max)
-    df_top_matches = r_script(zipped_path)
+    df_top_matches = r_script(zipped_path, range_min, range_max)
     sort_export(df_top_matches, target_file_path, 5)
+    _xlsx_metadata(target_file_path)

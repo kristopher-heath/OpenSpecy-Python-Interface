@@ -1,8 +1,8 @@
 import os
 import openpyxl as xl
 import pandas as pd
-from datetime import datetime
-from datetime import timezone
+
+from .metadata import _xlsx_metadata
 
 def reformat_path(path):
     """
@@ -201,6 +201,8 @@ def save_df_to_excel(excel_path, df, sheetname):
         ) as writer:
             df.to_excel(writer, sheet_name=sheetname, index=False)
 
+    _xlsx_metadata(excel_path)
+
 
 def check_excel_sheet(excel_path, sheetname):
     """
@@ -259,48 +261,6 @@ def empty_wells_count(df):
     count = len(df_empty_wells)
 
     return count
-
-
-def timestamp(version, excel_path):
-    """
-    Adds a timestamp and version number to the Excel export.
-
-    Parameters
-    ----------
-    version : str
-        The version number of this script.
-    excel_path : str
-        The full path to an .xlsx file.
-
-    Returns
-    -------
-    None.
-
-    """
-
-    # Open the Excel workbook
-    wb1 = xl.load_workbook(excel_path)
-
-    # Check if 'Notes' sheet exists and create one if not
-    notes_sheet = check_excel_sheet(wb1, "Notes")
-
-    # Pull the current time in UTC (Coordinated Universal Time)
-    time_stamp = datetime.now(timezone.utc)
-
-    # Reformat the timestamp to YYYY-MM-DD HH:MM UTC+0000
-    formatted_time = time_stamp.strftime("%Y-%m-%d %H:%M %Z%z")
-
-    # Add the version and timestamp to a string and save in cell A4 on the 'Notes' sheet
-    time_info = (
-        "This file was processed with OpenSpecy Automation "
-        + str(version)
-        + " at "
-        + str(formatted_time)
-    )
-    notes_sheet["A1"] = time_info
-
-    # Save the Excel workbook
-    wb1.save(str(excel_path))
 
 
 def notes_sheet(excel_path):
@@ -374,7 +334,7 @@ def notes_sheet(excel_path):
 
         print("Workbook saved to " + excel_path)
 
-    timestamp("0.9.3", excel_path)
+    _xlsx_metadata(excel_path)
 
 
 def list_to_df_to_sheet(df_lst, columns_list, excel_path, sheet_name):
