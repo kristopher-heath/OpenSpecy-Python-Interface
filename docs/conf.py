@@ -24,6 +24,7 @@ release = __version__
 extensions = ['sphinx.ext.napoleon', 'autoapi.extension']
 
 autoapi_dirs = ['../openspi']
+autoapi_options =  [ 'members', 'private-members', 'show-inheritance', 'show-module-summary', 'special-members', 'imported-members', ]
 
 templates_path = ['_templates']
 exclude_patterns = []
