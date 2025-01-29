@@ -1,9 +1,10 @@
 from setuptools import setup, find_packages
-import configparser
+import os
 
-config = configparser.ConfigParser()
-config.read("setup.cfg")
-cfg_version = config['metadata']['version']
+version_file = os.path.join(os.path.dirname(__file__), 'openspecy', '__version__.py')
+with open(version_file) as f:
+    exec(f.read())
+
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -13,8 +14,8 @@ with open("requirements.txt") as f:
     print(required)
 
 setup(
-    name="openspecy_python_interface",
-    version=cfg_version,
+    name="openspecypythoninterface",
+    version=__version__,
     description="""This package is designed to easily interface with the OpenSpecy package for R. Python is used for file preprocessing and post-processing, and OpenSpecy is accessed by executing R from Python.""",
     long_description=long_description,
     long_description_content_type="text/markdown",
