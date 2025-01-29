@@ -34,4 +34,4 @@ exclude_patterns = []
 
 html_theme = 'bizstyle'
 html_theme_options = {'sidebarwidth': 200 }
-html_static_path = ['_static']
+#html_static_path = ['_static']
