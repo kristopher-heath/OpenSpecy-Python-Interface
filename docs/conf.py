@@ -23,7 +23,7 @@ release = __version__
 
 extensions = ['sphinx.ext.napoleon', 'autoapi.extension']
 
-autoapi_dirs = ['../openspecy']
+autoapi_dirs = ['../openspecy_python_interface']
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -34,4 +34,4 @@ exclude_patterns = []
 
 html_theme = 'bizstyle'
 html_theme_options = {'sidebarwidth': 200 }
-#html_static_path = ['_static']
+html_static_path = ['_static']
