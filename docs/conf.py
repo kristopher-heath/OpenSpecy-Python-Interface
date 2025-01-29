@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import os
-version_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'openspecy_python_interface', '_version.py')
+version_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'openspi', '__version__.py')
 with open(version_file) as f:
     exec(f.read())
 
@@ -23,7 +23,7 @@ release = __version__
 
 extensions = ['sphinx.ext.napoleon', 'autoapi.extension']
 
-autoapi_dirs = ['../openspecy_python_interface']
+autoapi_dirs = ['../openspi']
 
 templates_path = ['_templates']
 exclude_patterns = []

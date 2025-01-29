@@ -6,8 +6,8 @@ from datetime import timezone
 
 def reformat_path(path):
     """
-    Reformat a raw string file path (path\\to\\folder) to contain double back-
-    slashes (path\\\\to\\\\folder), as is required by the R programming language.
+    Reformat a raw string file path (path\\\\to\\\\folder) to contain double back-
+    slashes (path\\\\\\\\to\\\\\\\\folder), as is required by the R programming language.
     Doesn't do anything if the path uses forward slashes (/)
 
     Parameters

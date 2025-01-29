@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version_file = os.path.join(os.path.dirname(__file__), 'openspecy_python_interface', '_version.py')
+version_file = os.path.join(os.path.dirname(__file__), 'openspi', '__version__.py')
 with open(version_file) as f:
     exec(f.read())
 
@@ -20,7 +20,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Kristopher Heath",
-    packages=find_packages(include=["openspecy_python_interface"]),
+    packages=find_packages(include=["openspi"]),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
