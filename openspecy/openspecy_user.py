@@ -105,7 +105,7 @@ def process_csv_files(folder_path, range_min, range_max):
     return zipped_file_path
 
 
-def r_script(folder_path):
+def r_script(folder_path, range_min, range_max):
     """
     Processes spectra through the OpenSpecy R package and returns a dataframe
     with the library matches and other data
@@ -115,6 +115,12 @@ def r_script(folder_path):
     ----------
     folder_path : str
         Path to the zipped folder containing the processed .csv files.
+    range_min : int
+        The minimum wavenumber of the desired spectral range. Note that this
+        value can be greater than the actual minimum if cropping is desired.
+    range_max : int
+        The maximum wavenumber of the desired spectral range. Note that this
+        value can be less than the actual maximum if cropping is desired.
 
     Returns
     -------
@@ -128,6 +134,9 @@ def r_script(folder_path):
 
     # Send the folder_path Python variable to an R variable
     ro.globalenv["folder_path"] = folder_path
+    ro.globalenv["range_min"] = range_min
+    ro.globalenv["range_max"] = range_max
+
 
     print("Executing R script...")
 
@@ -164,8 +173,8 @@ def r_script(folder_path):
       adj_intens_args = list(type = "none"),
       conform_spec = FALSE,
       conform_spec_args = list(range = NULL, res = 5, type = "interp"),
-      restrict_range = FALSE,
-      restrict_range_args = list(min = 0, max = 6000),
+      restrict_range = TRUE,
+      restrict_range_args = list(min = range_min, max = range_max),
       flatten_range = FALSE,
       flatten_range_args = list(min = 2200, max = 2420),
       subtr_baseline = FALSE,
@@ -285,8 +294,59 @@ def sort_export(df, excel_path, top_n):
     notes_sheet(excel_path)
 
 
-def openspecy_main(folder_path, file_name, target_directory):
-    target_file_path = os.path.join(target_directory, file_name)
-    zipped_path = process_csv_files(folder_path, 650, 4000)
+def openspecy_main(source_folder, range_min, range_max, export_xlsx, export_dir = None):
+    """
+    A complete function for spectral pre-processing, processing through the
+    OpenSpecy library in R, and configuring/processing the outputted data into
+    an Excel spreadsheet.
+
+
+    Parameters
+    ----------
+    source_folder : str
+        The complete path to the folder containing .csv files to be processed.
+        This function only accepts .csv files, and any other file types will
+        cause the function to stop.
+    range_min : int
+        The minimum wavenumber of the desired spectral range. Note that this
+        value can be greater than the actual minimum if cropping is desired.
+    range_max : int
+        The maximum wavenumber of the desired spectral range. Note that this
+        value can be less than the actual maximum if cropping is desired.
+    export_xlsx : str
+        The desired name of the outputted .xlsx file. NOTE: This path MUST
+        contain the file extention `.xlsx`
+    export_dir : str
+        The desired location of the outputted `.xlsx` file. Optional; if not
+        specified, the file will be saved in the source directory of the `.py`
+        file it is executed from.
+
+    Returns
+    -------
+    None.
+
+    """
+    if not export_dir == None:
+        if not os.path.exists(export_dir):
+            os.makedirs(export_dir)
+
+        target_file_path = os.path.join(export_dir, export_xlsx)
+
+    else:
+        target_file_path = export_xlsx
+
+    if os.path.exists(target_file_path):
+        print('File already exists. If you proceed, it will be overwritten.\nProceed? [y/n]')
+        proceed = str(input())
+        if proceed == 'y':
+            pass
+        elif proceed == 'n':
+            sys.exit()
+        else:
+            print('No valid input detected. Quitting now.')
+            sys.exit()
+
+    target_file_path = os.path.join(export_dir, export_xlsx)
+    zipped_path = process_csv_files(source_folder, range_min, range_max)
     df_top_matches = r_script(zipped_path)
     sort_export(df_top_matches, target_file_path, 5)
