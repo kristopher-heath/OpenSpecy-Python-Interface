@@ -13,6 +13,10 @@ with open("requirements.txt") as f:
     required = f.read().splitlines()
     print(required)
 
+with open("build_requirements.txt") as f:
+    build_required = f.read().splitlines()
+    print(build_required)
+
 setup(
     name="openspi",
     version=__version__,
@@ -27,6 +31,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=required,
+    build_requires=build_required,
     license="MIT",
     url="https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface",
 )
