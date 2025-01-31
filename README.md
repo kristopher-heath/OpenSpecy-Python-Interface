@@ -6,8 +6,6 @@
 
 [Setup and Installation](#setup-and-installation)
 
-[Installation Tutorial](#installation-tutorial)
-
 [Usage & Documentation](#usage--documentation)
 
 [Notes](#notes)
@@ -17,6 +15,8 @@
 [Contributing](#contributing)
 
 [License](#license)
+
+[Installation Tutorial](#installation-tutorial)
 
 ---
 
@@ -75,6 +75,54 @@ pip install openspecy-python-interface
 
 * Run Python in the IDE of your choice
 * Use the package as outlined below
+
+---
+
+## Usage & Documentation
+
+**Example:**
+
+```bash
+import os
+os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"
+
+from openspi.core import openspecy_main
+
+openspecy_main(
+    source_folder = r"C:\Users\{user}\Documents\Unprocessed Data\{folder}",
+    range_min = 650,
+    range_max = 4000,
+    export_xlsx = "{filename}.xlsx",
+    export_dir = r"C:\Users\{user}\Documents\OpenSpecy Exports")
+```
+
+Please see [https://openspecy-python-interface.readthedocs.io/en/latest/](https://openspecy-python-interface.readthedocs.io/en/latest/) for all available functions.
+
+
+## Notes
+
+This package uses [rpy2](https://rpy2.github.io/) to execute R code through Python. To write your own R script, use the [`rpy2.robjects.r`](https://rpy2.github.io/doc/v3.5.x/html/introduction.html#calling-r-functions) function.
+
+## To-Do
+
+* Add support for settings customizability
+  * Selection of OpenSpecy library
+  * Full configurability of OpenSpecy's [`process_spec`](https://rawcdn.githack.com/wincowgerDEV/OpenSpecy-package/c253d6c3298c7db56fbfdceee6ff0e654a1431cd/reference/process_spec.html) function
+
+---
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first
+to discuss what you would like to change.
+
+Please make sure to update tests as appropriate.
+
+---
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
 
 ---
 
@@ -174,49 +222,3 @@ import openspecy-python-interface
 ```
 
 🎉 Congrats! You have completed setup and installation! 🎉
-
-## Usage & Documentation
-
-**Example:**
-
-```bash
-import os
-os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"
-
-from openspi.core import openspecy_main
-
-openspecy_main(
-    source_folder = r"C:\Users\{user}\Documents\Unprocessed Data\{folder}",
-    range_min = 650,
-    range_max = 4000,
-    export_xlsx = "{filename}.xlsx",
-    export_dir = r"C:\Users\{user}\Documents\OpenSpecy Exports")
-```
-
-Please see [https://openspecy-python-interface.readthedocs.io/en/latest/](https://openspecy-python-interface.readthedocs.io/en/latest/) for all available functions.
-
-
-## Notes
-
-This package uses [rpy2](https://rpy2.github.io/) to execute R code through Python. To write your own R script, use the [`rpy2.robjects.r`](https://rpy2.github.io/doc/v3.5.x/html/introduction.html#calling-r-functions) function.
-
-## To-Do
-
-* Add support for settings customizability
-  * Selection of OpenSpecy library
-  * Full configurability of OpenSpecy's [`process_spec`](https://rawcdn.githack.com/wincowgerDEV/OpenSpecy-package/c253d6c3298c7db56fbfdceee6ff0e654a1431cd/reference/process_spec.html) function
-
----
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
-
----
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
