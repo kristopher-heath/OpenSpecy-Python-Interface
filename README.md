@@ -86,9 +86,9 @@ pip install openspecy-python-interface
 import os
 os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"
 
-from openspi.core import openspecy_main
+from openspi.core import openspi_main
 
-openspecy_main(
+openspi_main(
     source_folder = r"C:\Users\{user}\Documents\Unprocessed Data\{folder}",
     range_min = 650,
     range_max = 4000,
@@ -218,7 +218,9 @@ pip install openspecy-python-interface
 ```bash
 import os
 os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"	# Paste your own R_HOME var here
-import openspecy-python-interface
+import openspi.core
 ```
 
 🎉 Congrats! You have completed setup and installation! 🎉
+
+Please see the [Usage & Documentation](#usage--documentation) section for more information.
