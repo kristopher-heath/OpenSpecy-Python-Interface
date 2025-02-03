@@ -300,7 +300,7 @@ def sort_export(df, excel_path, top_n):
     notes_sheet(excel_path)
 
 
-def openspecy_main(source_folder, range_min, range_max, export_xlsx, export_dir = None):
+def openspi_main(source_folder, range_min, range_max, export_xlsx, export_dir = None):
     """
     A complete function for spectral pre-processing, processing through the
     OpenSpecy library in R, and configuring/processing the outputted data into
