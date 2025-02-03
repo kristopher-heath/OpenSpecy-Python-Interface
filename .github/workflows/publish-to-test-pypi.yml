@@ -80,7 +80,7 @@ jobs:
 
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/openspecy_python_interface
+      url: https://test.pypi.org/p/openspi
 
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
