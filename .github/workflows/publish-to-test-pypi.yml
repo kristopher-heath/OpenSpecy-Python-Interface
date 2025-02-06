@@ -60,16 +60,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.11
-      - name: Install R
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y r-base
-      - name: Install R dependencies
-        run: |
-          R_LIBS_USER=$(Rscript -e 'cat(Sys.getenv("R_LIBS_USER"))')
-          mkdir -p "$R_LIBS_USER"
-          Rscript -e "install.packages('devtools', repos='http://cran.rstudio.com/', lib='$R_LIBS_USER')"
-          Rscript -e "devtools::install_version('rpy2', version='3.5.16', lib='$R_LIBS_USER')"
+      
       - name: Install build dependencies
         run: |
           python -m pip install --upgrade pip
