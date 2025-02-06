@@ -78,7 +78,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build the package
+        env:
+          RPY2_CFFI_MODE: ABI
         run: python -m build
+
 
       - name: Publish to TestPyPI
         env:
