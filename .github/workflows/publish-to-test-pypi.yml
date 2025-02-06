@@ -56,6 +56,16 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.11
+      
+      - name: Install R
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y r-base
+
+      - name: Install R dependencies
+        run: |
+          Rscript -e "install.packages('devtools', repos='http://cran.rstudio.com/')"
+          Rscript -e "devtools::install_version('rpy2', version='3.5.16')"
 
       - name: Install build dependencies
         run: |
