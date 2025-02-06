@@ -43,7 +43,8 @@ jobs:
 
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
-    needs: build
+    needs:
+    - build
     runs-on: ubuntu-latest
 
     environment:
@@ -54,34 +55,20 @@ jobs:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
-      - name: Check out the code
-        uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Download all the dists
+        uses: actions/download-artifact@v4
         with:
-          python-version: 3.11
-      
-      - name: Install build dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r build_requirements.txt
-      - name: Install runtime dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-      - name: Build the package
-        env:
-          RPY2_CFFI_MODE: ABI
-        run: python -m build
-      - name: Publish to TestPyPI
-        env:
-          TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
-          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
-        run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-
+          name: python-package-distributions
+          path: dist/
+      - name: Publish distribution 📦 to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+  
   github-release:
     name: Sign the Python 🐍 distribution 📦 with Sigstore and upload them to GitHub Release
-    needs: publish-to-testpypi
+    needs:
+    - publish-to-testpypi
     runs-on: ubuntu-latest
 
     permissions:
@@ -94,19 +81,27 @@ jobs:
         with:
           name: python-package-distributions
           path: dist/
+
       - name: Sign the dists with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.0
         with:
           inputs: >-
             ./dist/*.tar.gz
             ./dist/*.whl
+
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          gh release create v${{steps.get_version.outputs.VERSION}} dist/*.whl dist/*.tar.gz --repo KrisHeathNREL/OpenSpecy-Python-Interface --notes "Release v${{ steps.get_version.outputs.VERSION }}"
+        run: >-
+          gh release create
+          v${{steps.get_version.outputs.VERSION}} dist/*.whl dist/*.tar.gz
+          --repo KrisHeathNREL/OpenSpecy-Python-Interface
+          --notes "Release v${{ steps.get_version.outputs.VERSION }}"
+          
       - name: Upload artifact signatures to GitHub Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          gh release upload v${{steps.get_version.outputs.VERSION}} dist/** --repo KrisHeathNREL/OpenSpecy-Python-Interface
+        run: >-
+          gh release upload
+          v${{steps.get_version.outputs.VERSION}} dist/**
+          --repo KrisHeathNREL/OpenSpecy-Python-Interface
