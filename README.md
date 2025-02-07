@@ -32,6 +32,7 @@ The OpenSpecy R package, however, can process all top *n* matches consecutively 
 
 Thus was the beginning of the **OpenSpecy Python Interface** (openspi), an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
 
+[GitHub page here](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface)
 [TestPyPI page here](https://test.pypi.org/project/openspi/)
 
 ---
@@ -93,11 +94,11 @@ os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"
 from openspi.core import openspi_main
 
 openspi_main(
-    source_folder = r"C:\Users\{user}\Documents\Unprocessed Data\{folder}",
+    source_folder = r"C:\Users\USER\Documents\Unprocessed Data\FOLDER",
     range_min = 650,
     range_max = 4000,
-    export_xlsx = "{filename}.xlsx",
-    export_dir = r"C:\Users\{user}\Documents\OpenSpecy Exports")
+    export_xlsx = "FILENAME.xlsx",
+    export_dir = r"C:\Users\USER\Documents\OpenSpecy Exports")
 ```
 
 Please see [https://openspecy-python-interface.readthedocs.io/en/stable/](https://openspecy-python-interface.readthedocs.io/en/stable/) for all available functions.
@@ -149,7 +150,7 @@ This is a step-by-step walkthrough for users who aren't as familiar with using R
 install.packages('OpenSpecy', repos='http://cran.us.r-project.org')
 ```
 
-![install openspecy in R](instruction_pics/install_openspecy.png "install_openspecy")
+![install openspecy in R](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/install_openspecy.png "install_openspecy")
 
 3. Once OpenSpecy and its dependencies are installed, run the following code in the console one line at a time:
 
@@ -160,7 +161,7 @@ get_lib()
 
 * This will download the 7 spectral libraries that are available in OpenSpecy. These libraries will be kept on your hard drive, so after initial installation, this only needs to be done when the libraries are updated.
 
-![get libraries](instruction_pics/get_lib.png "get_lib")
+![get libraries](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/get_lib.png "get_lib")
 
 4. Run this line:
 
@@ -170,17 +171,17 @@ R.home()
 
 * Copy and paste the outputted path somewhere. This will be needed later.
 
-![find R_home var](instruction_pics/r_home.png "r_home")
+![find R_home var](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_home.png "r_home")
 
 * Note that in this screenshot, the path is outputted in shorthand. In this case, it corresponds to "C:/Program Files/R/R-4.4.2"
 
 5. Navigate to your `R_HOME` path. Double check that this folder has a 'bin' folder, which contains 'R.exe'
    * If it does not contain the 'bin' folder, look through your other files until you find a bin folder that contains 'R.exe' and copy and paste the file path of the parent directory (the folder that contains the 'bin' folder) somewhere for later
 
-![navigate to the r_home path](instruction_pics/r_home_path.png "r_home_path")
+![navigate to the r_home path](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_home_path.png "r_home_path")
 
 ---
-![open the bin folder](instruction_pics/r_exe.png "r_exe")
+![open the bin folder](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_exe.png "r_exe")
 
 6. Exit out of R. You will be prompted with "Save workspace image?" This is to save any user-defined objects. Because we have not defined anything, it does not matter if you select "yes" or "no"
 
@@ -191,14 +192,14 @@ R.home()
 1. If it is not already installed, download and install Anaconda from [https://www.anaconda.com/download](https://www.anaconda.com/download)
 2. Open Anaconda and navigate to the Environments tab on the left side, and then select the Create button from the menu at the bottom of the screen.
 
-![create anaconda environment](instruction_pics/create_env.png "create_env")
+![create anaconda environment](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/create_env.png "create_env")
 3. Name the environment as you choose.
 
 ## Python Setup
 
 1. In Anaconda Navigator, click the arrow button next to the environment you created and select "Open Terminal"
 
-![open terminal](instruction_pics/open_terminal.png "open_terminal")
+![open terminal](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/open_terminal.png "open_terminal")
 
 * Note that the environment in this screenshot is the base (root) environment. Please be sure to open the environment you created, not base
 
