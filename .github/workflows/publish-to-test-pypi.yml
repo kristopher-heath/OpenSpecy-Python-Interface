@@ -63,7 +63,9 @@ jobs:
           name: python-package-distributions
           path: dist/
       - name: Install Twine
-        run: python -m pip install twine
+        run: |
+          python -m pip install twine
+          pip install -U packaging
       - name: Publish distribution 📦 to TestPyPI
         env:
           TWINE_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
