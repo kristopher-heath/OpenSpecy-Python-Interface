@@ -76,7 +76,7 @@ R.home()
 * Run the following in the environment terminal:
 
 ```bash
-pip install -i https://test.pypi.org/simple/ openspi
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple openspi
 ```
 
 * Run Python in the IDE of your choice
@@ -214,7 +214,7 @@ R.home()
 2. In the terminal, run the following:
 
 ```bash
-pip install -i https://test.pypi.org/simple/ openspi
+python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple openspi
 ```
 
 * This will install this package as well as its dependencies (pandas, openpyxl, and rpy2)
