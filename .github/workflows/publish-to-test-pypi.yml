@@ -31,6 +31,8 @@ jobs:
       - name: Ensure requirements.txt exists
         run: |
           if [ ! -f requirements.txt ]; then echo "requirements.txt not found!"; exit 1; fi
+      - name: Clean build directory
+        run: rm -rf dist build *.egg-info
       - name: Build a binary wheel and a source tarball
         env:
           RPY2_CFFI_MODE: ABI
@@ -44,7 +46,7 @@ jobs:
   publish-to-testpypi:
     name: Publish Python 🐍 distribution 📦 to TestPyPI
     needs:
-    - build
+      - build
     runs-on: ubuntu-latest
 
     environment:
@@ -68,11 +70,10 @@ jobs:
           TWINE_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
         run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
-  
   github-release:
     name: Sign the Python 🐍 distribution 📦 with Sigstore and upload them to GitHub Release
     needs:
-    - publish-to-testpypi
+      - publish-to-testpypi
     runs-on: ubuntu-latest
 
     permissions:
@@ -101,7 +102,7 @@ jobs:
           v${{steps.get_version.outputs.VERSION}} dist/*.whl dist/*.tar.gz
           --repo KrisHeathNREL/OpenSpecy-Python-Interface
           --notes "Release v${{ steps.get_version.outputs.VERSION }}"
-          
+
       - name: Upload artifact signatures to GitHub Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
