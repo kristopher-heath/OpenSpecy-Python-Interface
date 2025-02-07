@@ -1,4 +1,6 @@
-# **ATTENTION: THIS PACKAGE IS PRE-RELEASE AND NOT YET USABLE**
+# **ATTENTION: THIS PACKAGE IS PRE-RELEASE AND CURRENTLY IN THE TESTING PHASE**
+
+Please contact me at [kheath@nrel.gov](kheath@nrel.gov) if you would like to assist with testing.
 
 ## Contents
 
@@ -28,7 +30,9 @@ The web version is quite useful, but usage can be hindered by the strength of on
 
 The OpenSpecy R package, however, can process all top *n* matches consecutively and quickly. The exported data table is still quite large and cumbersome, so for ease and speed of data interpretation, it is necessary to rearrange and exclude several of the columns. R is a great tool for this, but so is Python, which is more user-oriented and beginner-friendly, making it more accessible to less-code-literate people who may have a need for OpenSpecy.
 
-Thus was the beginning of the **OpenSpecy-Python-Interface**, an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
+Thus was the beginning of the **OpenSpecy Python Interface** (openspi), an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
+
+[TestPyPI page here](https://test.pypi.org/project/openspi/)
 
 ---
 
@@ -70,7 +74,7 @@ R.home()
 * Run the following in the environment terminal:
 
 ```bash
-pip install openspecy-python-interface
+pip install -i https://test.pypi.org/simple/ openspi
 ```
 
 * Run Python in the IDE of your choice
@@ -96,8 +100,7 @@ openspi_main(
     export_dir = r"C:\Users\{user}\Documents\OpenSpecy Exports")
 ```
 
-Please see [https://openspecy-python-interface.readthedocs.io/en/latest/](https://openspecy-python-interface.readthedocs.io/en/latest/) for all available functions.
-
+Please see [https://openspecy-python-interface.readthedocs.io/en/stable/](https://openspecy-python-interface.readthedocs.io/en/stable/) for all available functions.
 
 ## Notes
 
@@ -202,7 +205,7 @@ R.home()
 2. In the terminal, run the following:
 
 ```bash
-pip install openspecy-python-interface
+pip install -i https://test.pypi.org/simple/ openspi
 ```
 
 * This will install this package as well as its dependencies (pandas, openpyxl, and rpy2)
