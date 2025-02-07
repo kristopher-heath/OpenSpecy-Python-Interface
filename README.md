@@ -1,6 +1,6 @@
 # **ATTENTION: THIS PACKAGE IS PRE-RELEASE AND CURRENTLY IN THE TESTING PHASE**
 
-Please contact me at [kheath@nrel.gov](kheath@nrel.gov) if you would like to assist with testing.
+Please contact me at [kheath@nrel.gov](<mailto:kheath@nrel.gov>) if you would like to assist with testing.
 
 ## Contents
 
