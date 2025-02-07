@@ -30,9 +30,10 @@ The web version is quite useful, but usage can be hindered by the strength of on
 
 The OpenSpecy R package, however, can process all top *n* matches consecutively and quickly. The exported data table is still quite large and cumbersome, so for ease and speed of data interpretation, it is necessary to rearrange and exclude several of the columns. R is a great tool for this, but so is Python, which is more user-oriented and beginner-friendly, making it more accessible to less-code-literate people who may have a need for OpenSpecy.
 
-Thus was the beginning of the **OpenSpecy Python Interface** (openspi), an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
+Thus was the beginning of the **OpenSpecy Python Interface** (aka **openspi**), an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
 
 [GitHub page here](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface)
+
 [TestPyPI page here](https://test.pypi.org/project/openspi/)
 
 ---
@@ -85,6 +86,12 @@ pip install -i https://test.pypi.org/simple/ openspi
 
 ## Usage & Documentation
 
+Notes:
+
+* The folder must only contain .csv files.
+* The spectral library used in this package is set to only use  FTIR spectra from OpenSpecy's [derivative library](https://osf.io/x7dpz/). This will most likely be configurable in the future.
+* Currently, this will pull the top 5 matches for each spectrum. This will be changeable in the future.
+
 **Example:**
 
 ```bash
@@ -110,6 +117,7 @@ This package uses [rpy2](https://rpy2.github.io/) to execute R code through Pyth
 ## To-Do
 
 * Add support for settings customizability
+  * Configurability for top *n* matches (rather than top 5 only)
   * Selection of OpenSpecy library
   * Full configurability of OpenSpecy's [`process_spec`](https://rawcdn.githack.com/wincowgerDEV/OpenSpecy-package/c253d6c3298c7db56fbfdceee6ff0e654a1431cd/reference/process_spec.html) function
 
