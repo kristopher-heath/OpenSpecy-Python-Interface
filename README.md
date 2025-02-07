@@ -38,7 +38,7 @@ Thus was the beginning of the **OpenSpecy Python Interface** (openspi), an all-i
 
 ## Setup and Installation
 
-Note: This is a brief overview of the setup process. For an explicit step-by-step walkthrough, please see the [Installation Tutorial](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/INSTALLATION_TUTORIAL.md).
+Note: This is a brief overview of the setup process. For an explicit step-by-step walkthrough, please see the [Installation Tutorial](#installation-tutorial).
 
 **R Installation and Configuration**
 
