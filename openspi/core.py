@@ -6,8 +6,8 @@ import shutil
 import rpy2.robjects as ro
 import rpy2.robjects.pandas2ri as pandas2ri
 
-from openspi.metadata import _xlsx_metadata
-from openspi.utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
+from .metadata import _xlsx_metadata
+from .utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
 
 def process_csv_files(folder_path, range_min, range_max):
     """
@@ -101,7 +101,7 @@ def process_csv_files(folder_path, range_min, range_max):
 
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-        
+
     # Compress the folder into a .zip so it can be read in OpenSpecy
     zipped_file_path = shutil.make_archive(
         folder_path, format="zip", root_dir=folder_path
@@ -167,7 +167,8 @@ def r_script(folder_path, range_min, range_max):
 
     # Read the files in the folder, and conform the range of the spectra to
     # match the range of the library
-    files <- read_any(folder_path) |>
+    files <- read_any(folder_path, c_spec = FALSE) |> 
+      as_OpenSpecy() |>
       c_spec(range=ftir_lib$wavenumber, res=NULL)
 
     # 'Monolithic' file processing function, see
@@ -178,7 +179,7 @@ def r_script(folder_path, range_min, range_max):
       adj_intens = FALSE,
       adj_intens_args = list(type = "none"),
       conform_spec = FALSE,
-      conform_spec_args = list(range = filter_lib$wavenumber, res = NULL, type = "interp"),
+      conform_spec_args = list(range = ftir_lib$wavenumber, res = NULL, type = "interp"),
       restrict_range = TRUE,
       restrict_range_args = list(min = range_min, max = range_max),
       flatten_range = FALSE,
@@ -357,14 +358,3 @@ def openspi_main(source_folder, range_min, range_max, export_xlsx, export_dir = 
     df_top_matches = r_script(zipped_path, range_min, range_max)
     sort_export(df_top_matches, target_file_path, 5)
     _xlsx_metadata(target_file_path)
-    
-
-os.environ['R_HOME'] = r"/Library/Frameworks/R.framework/Resources"
-from openspi.core import openspi_main
-
-openspi_main(
-    source_folder = r"/Users/mippr/OpenSpecy-Python-Interface/Data",
-    range_min = 650,
-    range_max = 4000,
-    export_xlsx = "FILENAME.xlsx",
-    export_dir = r"/Users/mippr/OpenSpecy-Python-Interface/export")
