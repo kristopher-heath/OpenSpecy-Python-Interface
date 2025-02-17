@@ -2,7 +2,7 @@ import os
 import openpyxl as xl
 import pandas as pd
 
-from .metadata import _xlsx_metadata
+#from .metadata import _xlsx_metadata
 
 def reformat_path(path):
     """
@@ -18,7 +18,7 @@ def reformat_path(path):
     Returns
     -------
     reformatted_path : str
-        All \ are replaced with \\.
+        All \\ are replaced with \\\\.
 
     """
 
