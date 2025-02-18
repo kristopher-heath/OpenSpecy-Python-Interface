@@ -86,6 +86,17 @@ python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-ur
 
 ## Usage & Documentation
 
+This tool accepts a folder containing .csv files, which must be structured as outlined in the test_files folder:
+
+```bash
+├── test_files
+│   ├── acrylic_blue.csv
+│   ├── nylon66_gf.csv
+│   ├── pe_highdensity_gf.csv
+│   ├── pp_granule_gf.csv
+└── └── ps_amorphous_gf.csv
+```
+
 Notes:
 
 * The folder must only contain .csv files.
@@ -96,12 +107,12 @@ Notes:
 
 ```bash
 import os
-os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2"
+os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2" # Replace with your own 'R_HOME' var
 
 from openspi.core import openspi_main
 
 openspi_main(
-    source_folder = r"C:\Users\USER\Documents\Unprocessed Data\FOLDER",
+    source_folder = r"C:\Users\USER\Documents\Unprocessed Data\test_files",
     range_min = 650,
     range_max = 4000,
     export_xlsx = "FILENAME.xlsx",
