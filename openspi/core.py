@@ -154,7 +154,7 @@ def r_script(folder_path, range_min, range_max):
     library(data.table)
 
     # Fetch current spectral library from https://osf.io/x7dpz/
-    if (FALSE) { # \dontrun{
+    if (FALSE) { # \\dontrun{
       check_lib("derivative")
       get_lib("derivative")
     }
@@ -167,7 +167,8 @@ def r_script(folder_path, range_min, range_max):
 
     # Read the files in the folder, and conform the range of the spectra to
     # match the range of the library
-    files <- read_any(folder_path) |>
+    files <- read_any(folder_path, c_spec = FALSE) |> 
+      as_OpenSpecy() |>
       c_spec(range=ftir_lib$wavenumber, res=NULL)
 
     # 'Monolithic' file processing function, see
@@ -178,7 +179,7 @@ def r_script(folder_path, range_min, range_max):
       adj_intens = FALSE,
       adj_intens_args = list(type = "none"),
       conform_spec = FALSE,
-      conform_spec_args = list(range = NULL, res = 5, type = "interp"),
+      conform_spec_args = list(range = ftir_lib$wavenumber, res = NULL, type = "interp"),
       restrict_range = TRUE,
       restrict_range_args = list(min = range_min, max = range_max),
       flatten_range = FALSE,
