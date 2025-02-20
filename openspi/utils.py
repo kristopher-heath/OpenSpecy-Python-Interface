@@ -317,7 +317,7 @@ def notes_sheet(excel_path):
             + " nonplastic matches are empty wells."
         )
 
-        notes_sheet["A3"] = empty_matches
+        notes_sheet["A1"] = empty_matches
 
         # Compare the totally empty well count (5/5 empty) to the empty well
         # count (first match empty)
@@ -328,7 +328,7 @@ def notes_sheet(excel_path):
             + " empty well matches have 5/5 top hits for empty wells."
         )
 
-        notes_sheet["A4"] = empty
+        notes_sheet["A2"] = empty
 
         wb1.save(str(excel_path))
 
