@@ -153,12 +153,6 @@ def r_script(folder_path, range_min, range_max):
     library(OpenSpecy)
     library(data.table)
 
-    # Fetch current spectral library from https://osf.io/x7dpz/
-    if (FALSE) { # \\dontrun{
-      check_lib("derivative")
-      get_lib("derivative")
-    }
-
     # Load library into global environment
     spec_lib <- load_lib("derivative")
 
