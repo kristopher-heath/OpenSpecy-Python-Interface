@@ -2,7 +2,7 @@ import os
 import openpyxl as xl
 import pandas as pd
 
-#from .metadata import _xlsx_metadata
+from openspi.metadata import _xlsx_metadata
 
 def reformat_path(path):
     """
