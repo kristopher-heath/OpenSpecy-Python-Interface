@@ -1,8 +1,4 @@
 build/
 dist/
-openspecy_python_interface.egg-info/
-openspecypythoninterface.egg-info/
-setup/
 archived/
-.github/workflows/publish-to-test-pypi-on-push.yml
-.github/workflows/publish-to-test-pypi-on-release.yml
+openspi.egg-info/
