@@ -7,12 +7,109 @@ import rpy2.robjects as ro
 import rpy2.robjects.pandas2ri as pandas2ri
 
 from .metadata import _xlsx_metadata
-from .utils import reformat_path, save_df_to_excel, subsequent_matches_checked, list_to_df_to_sheet, notes_sheet
+from .utils import count_files, reformat_path, save_df_to_excel, matches_checked_sheet, subsequent_matches_checked, list_to_df_to_sheet
 
-def process_csv_files(folder_path, range_min, range_max):
+def process_csv(file_path, range_min, range_max):
     """
     Processes .csv files to match the required format for OpenSpecy processing.
     (The required format is two columns named ``'wavenumber'`` and ``'intensity'``)
+
+
+    Parameters
+    ----------
+    file_path : str
+        The complete path to the .csv file to be processed. This function
+        only accepts .csv files, and any other file types will cause the
+        function to stop.
+    range_min : int
+        The minimum wavenumber of the desired spectral range. Note that this
+        value can be greater than the actual minimum if cropping is desired.
+    range_max : int
+        The maximum wavenumber of the desired spectral range. Note that this
+        value can be less than the actual maximum if cropping is desired.
+
+    Returns
+    -------
+    file_path : str
+        The complete path to the processed .csv file.
+
+    """
+
+    if range_max <= range_min:
+        print(
+            f"Error. Specified range is incompatible. range_min must be less than range_max.\nCurrent values:\nrange_min: {range_min}\nrange_max: {range_max}"
+        )
+        sys.exit()
+    try:
+        # For each file in the folder:
+        #for filename in os.listdir(file_path):
+
+        # Ensure the file is a .csv
+        if file_path.endswith(".csv") == False:
+            print(
+                "Incompatible file format detected. This function only accepts .csv files. Please remove all other file types. Quitting now."
+            )
+            sys.exit()
+
+        # Join the individual file with the parent path to get a full path
+        #file_path = os.path.join(file_path, filename)
+
+        # Open the .csv file with the csv.reader object
+        with open(file_path, "r", newline="") as csvfile:
+            csvreader = csv.reader(csvfile, csv.QUOTE_NONE)
+
+            # Read the .csv into a list
+            rows = list(csvreader)
+
+            # Initialize the keep_row list, which will be for rows that
+            # contain numeric data
+            keep_rows = []
+
+            # For each row:
+            x = 0
+            while x < len(rows):
+                try:
+                    # Check if the data in the first and second columns are
+                    # numbers, and if so, keep the row
+                    float(rows[x][0])
+                    float(rows[x][1])
+                    if (
+                        float(rows[x][0]) >= range_min
+                        and float(rows[x][0]) <= range_max
+                    ):
+                        keep_rows.append(rows[x])
+                except:
+                    # If the data cannot be converted into a number, skip
+                    # the row
+                    pass
+                x += 1
+
+        # Use the csv.writer object to overwrite the .csv file
+        with open(file_path, "w", newline="") as csvfile:
+            csvwriter = csv.writer(csvfile)
+
+            # Write the specified column names to the first row
+            csvwriter.writerow(["wavenumber", "intensity"])
+
+            # Write the "floatable" rows to the .csv file
+            csvwriter.writerows(keep_rows)
+
+        # The file should now fit the format for OpenSpecy processing
+        filename = os.path.basename(file_path)
+
+        print(f"Processed file: {filename}")
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+
+    return file_path
+
+
+def process_csv_folder(folder_path, range_min, range_max):
+    """
+    Processes a batch of .csv files in the given folder by calling
+    `process_csv`, then zips the processed files to send to OpenSpecy.
 
 
     Parameters
@@ -37,81 +134,21 @@ def process_csv_files(folder_path, range_min, range_max):
 
     """
 
-    if range_max <= range_min:
-        print(
-            f"Error. Specified range is incompatible. range_min must be less than range_max.\nCurrent values:\nrange_min: {range_min}\nrange_max: {range_max}"
-        )
-        sys.exit()
     try:
-        # For each file in the folder:
         for filename in os.listdir(folder_path):
-
-            # Ensure the file is a .csv
-            if filename.endswith(".csv") == False:
-                print(
-                    "Incompatible file format detected. This function only accepts .csv files. Please remove all other file types. Quitting now."
-                )
-                sys.exit()
-
-            # Join the individual file with the parent path to get a full path
             file_path = os.path.join(folder_path, filename)
-
-            # Open the .csv file with the csv.reader object
-            with open(file_path, "r", newline="") as csvfile:
-                csvreader = csv.reader(csvfile, csv.QUOTE_NONE)
-
-                # Read the .csv into a list
-                rows = list(csvreader)
-
-                # Initialize the keep_row list, which will be for rows that
-                # contain numeric data
-                keep_rows = []
-
-                # For each row:
-                x = 0
-                while x < len(rows):
-                    try:
-                        # Check if the data in the first and second columns are
-                        # numbers, and if so, keep the row
-                        float(rows[x][0])
-                        float(rows[x][1])
-                        if (
-                            float(rows[x][0]) >= range_min
-                            and float(rows[x][0]) <= range_max
-                        ):
-                            keep_rows.append(rows[x])
-                    except:
-                        # If the data cannot be converted into a number, skip
-                        # the row
-                        pass
-                    x += 1
-
-            # Use the csv.writer object to overwrite the .csv file
-            with open(file_path, "w", newline="") as csvfile:
-                csvwriter = csv.writer(csvfile)
-
-                # Write the specified column names to the first row
-                csvwriter.writerow(["wavenumber", "intensity"])
-
-                # Write the "floatable" rows to the .csv file
-                csvwriter.writerows(keep_rows)
-
-            # The file should now fit the format for OpenSpecy processing
-            print(f"Processed file: {filename}")
+            process_csv(file_path, range_min, range_max)
 
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print(f'An error occurred: {str(e)}')
 
-    # Compress the folder into a .zip so it can be read in OpenSpecy
-    zipped_file_path = shutil.make_archive(
-        folder_path, format="zip", root_dir=folder_path
-    )
-    print("Files compressed to", zipped_file_path)
+    zipped_file_path = shutil.make_archive(folder_path, format='zip', root_dir=folder_path)
+    print("Files compressed to",zipped_file_path)
 
     return zipped_file_path
 
 
-def r_script(folder_path, range_min, range_max):
+def r_script(file_path, range_min, range_max):
     """
     Processes spectra through the OpenSpecy R package and returns a dataframe
     with the library matches and other data
@@ -119,8 +156,8 @@ def r_script(folder_path, range_min, range_max):
 
     Parameters
     ----------
-    folder_path : str
-        Path to the zipped folder containing the processed .csv files.
+    file_path : str
+        Path to the zipped folder containing the processed .csv files OR the path to a single .csv file.
     range_min : int
         The minimum wavenumber of the desired spectral range. Note that this
         value can be greater than the actual minimum if cropping is desired.
@@ -136,10 +173,10 @@ def r_script(folder_path, range_min, range_max):
     """
 
     # Reformat the folder path to have \\ instead of \
-    folder_path = reformat_path(folder_path)
+    file_path = reformat_path(file_path)
 
     # Send the folder_path Python variable to an R variable
-    ro.globalenv["folder_path"] = folder_path
+    ro.globalenv["file_path"] = file_path
     ro.globalenv["range_min"] = range_min
     ro.globalenv["range_max"] = range_max
 
@@ -152,6 +189,7 @@ def r_script(folder_path, range_min, range_max):
 
     library(OpenSpecy)
     library(data.table)
+    library(tools)
 
     # Load library into global environment
     spec_lib <- load_lib("derivative")
@@ -161,9 +199,15 @@ def r_script(folder_path, range_min, range_max):
 
     # Read the files in the folder, and conform the range of the spectra to
     # match the range of the library
-    files <- read_any(folder_path, c_spec = FALSE) |> 
-      as_OpenSpecy() |>
-      c_spec(range=ftir_lib$wavenumber, res=NULL)
+    files <- read_any(file_path)
+
+    if (file_ext(file_path) == 'csv') {
+      files <- conform_spec(files, range = ftir_lib$wavenumber, res = NULL)
+      }
+
+    if (file_ext(file_path) == 'zip') {
+      files <- c_spec(files, range = ftir_lib$wavenumber, res = NULL)
+      }
 
     # 'Monolithic' file processing function, see
     #  https://rawcdn.githack.com/wincowgerDEV/OpenSpecy-package/c253d6c3298c7db56fbfdceee6ff0e654a1431cd/reference/process_spec.html
@@ -231,7 +275,7 @@ def sort_export(df, excel_path, top_n):
 
     # Sort the dataframe by file name and save to Excel
     df = df.sort_values(by=["file_name.y"], ascending=True)
-    save_df_to_excel(excel_path, df, "Info")
+    save_df_to_excel(excel_path, df, "Source Data")
 
     # Copy the following columns into a new dataframe
     df_truncated = df[
@@ -292,10 +336,12 @@ def sort_export(df, excel_path, top_n):
     list_to_df_to_sheet(df_full_list, column_names, excel_path, "Subsequent Matches")
 
     # Add a notes sheet to the Excel workbook
-    notes_sheet(excel_path)
+    # notes_sheet(excel_path)
+    matches_checked_sheet(excel_path)
 
 
-def openspi_main(source_folder, range_min, range_max, export_xlsx, export_dir = None):
+
+def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_dir = None):
     """
     A complete function for spectral pre-processing, processing through the
     OpenSpecy library in R, and configuring/processing the outputted data into
@@ -304,10 +350,10 @@ def openspi_main(source_folder, range_min, range_max, export_xlsx, export_dir = 
 
     Parameters
     ----------
-    source_folder : str
-        The complete path to the folder containing .csv files to be processed.
-        This function only accepts .csv files, and any other file types will
-        cause the function to stop.
+    source_path : str
+        The complete path to the folder containing .csv files to be processed OR
+        the path to a single .csv file. This function only accepts .csv files,
+        and any other file types will cause the function to stop.
     range_min : int
         The minimum wavenumber of the desired spectral range. Note that this
         value can be greater than the actual minimum if cropping is desired.
@@ -315,29 +361,47 @@ def openspi_main(source_folder, range_min, range_max, export_xlsx, export_dir = 
         The maximum wavenumber of the desired spectral range. Note that this
         value can be less than the actual maximum if cropping is desired.
     export_xlsx : str
-        The desired name of the outputted .xlsx file. NOTE: This path MUST
-        contain the file extention `.xlsx`
+        The desired name of the outputted .xlsx file. If the file name
+        does not contain the file extention `.xlsx`, it will be added.
+        Optional; if not specified, the outputted file will be named according
+        to the source file/folder.
     export_dir : str
         The desired location of the outputted `.xlsx` file. Optional; if not
-        specified, the file will be saved in the source directory of the `.py`
-        file it is executed from.
+        specified, the file will be saved in the parent directory of the source
+        file/folder.
 
     Returns
     -------
     None.
 
     """
+
+    # If export_xlsx is specified, check that it includes '.xlsx'
+    if not export_xlsx == None:
+        if not '.xlsx' in export_xlsx:
+            export_xlsx = export_xlsx + '.xlsx'
+    else:
+        # Check if source_path is a folder or a file, and determine the export
+        # name accordingly
+        if os.path.isdir(source_path):
+            export_xlsx = os.path.basename(source_path) + '.xlsx'
+        else:
+            export_xlsx = os.path.basename(source_path).replace('.csv', '.xlsx')
+
+    # If export_dir is specified, check if it exists. If not, create it.
     if not export_dir == None:
         if not os.path.exists(export_dir):
             os.makedirs(export_dir)
 
         target_file_path = os.path.join(export_dir, export_xlsx)
 
+    # If export_dir is not specified, save the file in the same directory as source_path
     else:
-        target_file_path = export_xlsx
+        target_file_path = os.path.join(os.path.dirname(source_path), export_xlsx)
 
+    # Check if the target file already exists. If it does, ask the user if they want to overwrite.
     if os.path.exists(target_file_path):
-        print('File already exists. If you proceed, it will be overwritten.\nProceed? [y/n]')
+        print('File already exists. Please specify export_xlsx to change the name.\nIf you proceed, it will be overwritten.\nProceed? [y/n]')
         proceed = str(input())
         if proceed == 'y':
             pass
@@ -347,8 +411,27 @@ def openspi_main(source_folder, range_min, range_max, export_xlsx, export_dir = 
             print('No valid input detected. Quitting now.')
             sys.exit()
 
-    target_file_path = os.path.join(export_dir, export_xlsx)
-    zipped_path = process_csv_files(source_folder, range_min, range_max)
-    df_top_matches = r_script(zipped_path, range_min, range_max)
+    # Check if the source_path is a folder or a file
+    if os.path.isdir(source_path):
+
+        # If the folder contains multiple files, process them all and create a zip folder
+        if count_files(source_path) > 1:
+            processed_path = process_csv_folder(source_path, range_min, range_max)
+
+        # If the folder contains only one file, determine its path process it.
+        elif count_files(source_path) == 1:
+            for filename in os.listdir(source_path):
+                file_path = os.path.join(source_path, filename)
+                processed_path = process_csv(file_path, range_min, range_max)
+
+        # If the folder contains no files, quit.
+        elif count_files(source_path) == 0:
+            print("No files detected. Quitting now.")
+            sys.exit()
+    # If the source_path is a file, process it.
+    else:
+        processed_path = process_csv(source_path, range_min, range_max)
+    
+    df_top_matches = r_script(processed_path, range_min, range_max)
     sort_export(df_top_matches, target_file_path, 5)
     _xlsx_metadata(target_file_path)
