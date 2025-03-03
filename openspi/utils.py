@@ -1,8 +1,27 @@
 import os
-import openpyxl as xl
 import pandas as pd
 
 from openspi.metadata import _xlsx_metadata
+
+def count_files(folder_path):
+    """Counts the number of files in a given directory.
+
+    Args:
+        folder_path: The path to the directory.
+
+    Returns:
+        The number of files in the directory, or -1 if the directory does not exist.
+    """
+    if not os.path.exists(folder_path):
+        return -1
+
+    file_count = 0
+    for item in os.listdir(folder_path):
+        item_path = os.path.join(folder_path, item)
+        if os.path.isfile(item_path):
+            file_count += 1
+    return file_count
+
 
 def reformat_path(path):
     """
@@ -263,7 +282,7 @@ def empty_wells_count(df):
     return count
 
 
-def notes_sheet(excel_path):
+def matches_checked_sheet(excel_path):
     """
     Adds a 'Notes' sheet with the number of nonpolymer matches and empty wells
 
@@ -278,63 +297,39 @@ def notes_sheet(excel_path):
 
     """
 
-    # Open the Excel workbook
-    wb1 = xl.load_workbook(excel_path)
 
-    # Check if 'Notes' sheet exists and create one if not
-    notes_sheet = check_excel_sheet(wb1, "Notes")
-
-    # Open the Summary sheet into a pandas dataframe
+    # Open the Summary and Updated Summary sheets into a pandas dataframe
     xlsx_file = pd.ExcelFile(excel_path)
     df_summary = pd.read_excel(xlsx_file, "Summary")
+    df_updated_summary = pd.read_excel(xlsx_file, "Updated Summary")
 
-    # Send all rows with not plastic matches to a dataframe
-    df_not_plastic = df_summary[df_summary["plastic_or_not"] == "not plastic"]
+    poly_count_init, nonpoly_count_init, empty_count_init = count_matches(df_summary)
 
-    # Check if the 'not plastic' dataframe is emtpy
-    if df_not_plastic.empty:
-        print("No nonplastic matches.")
+    poly_count_upd, nonpoly_count_upd, empty_count_upd = count_matches(df_updated_summary)
 
-    else:
-        # Count how many empty well matches are in the dataframe
-        empty_wells = empty_wells_count(df_not_plastic)
+    data = [['Initial', poly_count_init, nonpoly_count_init, empty_count_init], ['Updated', poly_count_upd, nonpoly_count_upd, empty_count_upd]]
+    df = pd.DataFrame(data, columns=['-', 'Polymer', 'Nonpolymer', 'Empty Wells'])
 
-        # Open the Updated Summary sheet into a pandas dataframe
-        df_updated_summary = pd.read_excel(xlsx_file, "Updated Summary")
+    print(df)
 
-        # Send all rows containing the matching text to a dataframe and count
-        # the length of the dataframe
-        df_all_empty = df_updated_summary[
-            df_updated_summary["matches_checked"] == "all top matches empty wells"
-        ]
-        totally_empty_count = len(df_all_empty)
+    # Send df to Excel workbook
+    save_df_to_excel(excel_path, df, "Matches Checked")
 
-        # Compare the empty well count to the nonpolymer matches count
-        empty_matches = (
-            str(empty_wells)
-            + " out of "
-            + str(len(df_not_plastic))
-            + " nonplastic matches are empty wells."
-        )
-
-        notes_sheet["A1"] = empty_matches
-
-        # Compare the totally empty well count (5/5 empty) to the empty well
-        # count (first match empty)
-        empty = (
-            str(totally_empty_count)
-            + " out of "
-            + str(empty_wells)
-            + " empty well matches have 5/5 top hits for empty wells."
-        )
-
-        notes_sheet["A2"] = empty
-
-        wb1.save(str(excel_path))
-
-        print("Workbook saved to " + excel_path)
+    print("Workbook saved to " + excel_path)
 
     _xlsx_metadata(excel_path)
+
+
+def count_matches(df):
+    df_plastic = df[df["plastic_or_not"] == "plastic"]
+    df_not_plastic = df[df["plastic_or_not"] == "not plastic"]
+    df_empty = df[df["spectrum_identity"] == "empty well"]
+
+    poly_count = len(df_plastic)
+    nonpoly_count = len(df_not_plastic)
+    empty_count = len(df_empty)
+
+    return poly_count, nonpoly_count, empty_count
 
 
 def list_to_df_to_sheet(df_lst, columns_list, excel_path, sheet_name):
@@ -361,3 +356,4 @@ def list_to_df_to_sheet(df_lst, columns_list, excel_path, sheet_name):
 
     df = pd.DataFrame(df_lst, columns=columns_list)
     save_df_to_excel(excel_path, df, sheet_name)
+
