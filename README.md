@@ -1,6 +1,6 @@
-# **ATTENTION: THIS PACKAGE IS PRE-RELEASE AND CURRENTLY IN THE TESTING PHASE**
+# **ATTENTION: THIS PACKAGE IS IN EARLY TESTING**
 
-Please contact me at [kheath@nrel.gov](<mailto:kheath@nrel.gov>) if you would like to assist with testing.
+This should be usable, Please contact me at [kheath@nrel.gov](<mailto:kheath@nrel.gov>) if you would like to assist with testing.
 
 ## Contents
 
@@ -124,7 +124,8 @@ openspi_main(
     range_min = 650,
     range_max = 4000,
     export_xlsx = "FILENAME.xlsx",
-    export_dir = r"C:\Users\USER\Documents\OpenSpecy Exports")
+    export_dir = r"C:\Users\USER\Documents\OpenSpecy Exports"
+    nrel_version = False)
 ```
 
 Please see [https://openspecy-python-interface.readthedocs.io/en/stable/](https://openspecy-python-interface.readthedocs.io/en/stable/) for all available functions.
@@ -198,17 +199,17 @@ R.home()
 
 * Copy and paste the outputted path somewhere. This will be needed later.
 
-![find R_home var](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_home.png "r_home")
+![find R_home var](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_home.png "r_home")
 
 * Note that in this screenshot, the path is outputted in shorthand. In this case, it corresponds to "C:/Program Files/R/R-4.4.2"
 
 5. Navigate to your `R_HOME` path. Double check that this folder has a 'bin' folder, which contains 'R.exe'
    * If it does not contain the 'bin' folder, look through your other files until you find a bin folder that contains 'R.exe' and copy and paste the file path of the parent directory (the folder that contains the 'bin' folder) somewhere for later
 
-![navigate to the r_home path](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_home_path.png "r_home_path")
+![navigate to the r_home path](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_home_path.png "r_home_path")
 
 ---
-![open the bin folder](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_exe.png "r_exe")
+![open the bin folder](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/r_exe.png "r_exe")
 
 6. Exit out of R. You will be prompted with "Save workspace image?" This is to save any user-defined objects. Because we have not defined anything, it does not matter if you select "yes" or "no"
 
@@ -219,14 +220,14 @@ R.home()
 1. If it is not already installed, download and install Anaconda from [https://www.anaconda.com/download](https://www.anaconda.com/download)
 2. Open Anaconda and navigate to the Environments tab on the left side, and then select the Create button from the menu at the bottom of the screen.
 
-![create anaconda environment](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/create_env.png "create_env")
+![create anaconda environment](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/create_env.png "create_env")
 3. Name the environment as you choose.
 
 ## Python Setup
 
 1. In Anaconda Navigator, click the arrow button next to the environment you created and select "Open Terminal"
 
-![open terminal](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/open_terminal.png "open_terminal")
+![open terminal](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/open_terminal.png "open_terminal")
 
 * Note that the environment in this screenshot is the base (root) environment. Please be sure to open the environment you created, not base
 
