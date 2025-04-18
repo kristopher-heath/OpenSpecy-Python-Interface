@@ -21,7 +21,7 @@ def _xlsx_metadata(xlsx_file):
     from openspi.__version__ import __version__
 
     # Create version tag str
-    version_tag = "OpenSPI v" + __version__
+    version_tag = "openspi v" + __version__
 
     # Load the workbook
     wb = openpyxl.load_workbook(xlsx_file)
