@@ -149,7 +149,7 @@ def process_csv_folder(folder_path, range_min, range_max):
     return zipped_file_path
 
 
-def r_script(file_path, range_min, range_max, top_n):
+def r_script(file_path, range_min, range_max, top_n = 5):
     """
     Processes spectra through the OpenSpecy R package and returns a dataframe
     with the library matches and other data
@@ -167,6 +167,7 @@ def r_script(file_path, range_min, range_max, top_n):
         value can be less than the actual maximum if cropping is desired.
     top_n : int
         The top *n* highest matches desired. Recommended values: 1 <= n >= 10
+        (Not yet supported)
 
     Returns
     -------
