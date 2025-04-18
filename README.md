@@ -6,6 +6,8 @@ Please contact me at [kheath@nrel.gov](<mailto:kheath@nrel.gov>) if you would li
 
 [OpenSpecy Python Interface](#openspecy-python-interface)
 
+[OpenSpecy Compatibility](#openspecy-compatibility)
+
 [Setup and Installation](#setup-and-installation)
 
 [Usage & Documentation](#usage--documentation)
@@ -35,6 +37,12 @@ Thus was the beginning of the **OpenSpecy Python Interface** (aka **openspi**), 
 [GitHub page here](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface)
 
 [TestPyPI page here](https://test.pypi.org/project/openspi/)
+
+---
+
+## OpenSpecy Compatibility
+
+This package is compatible [OpenSpecy v1.4.0](https://cran.r-project.org/web/packages/OpenSpecy/index.html).
 
 ---
 
@@ -112,7 +120,7 @@ os.environ['R_HOME'] = r"C:\Program Files\R\R-4.4.2" # Replace with your own 'R_
 from openspi.core import openspi_main
 
 openspi_main(
-    source_folder = r"C:\Users\USER\Documents\Unprocessed Data\test_files",
+    source_path = r"C:\Users\USER\Documents\Unprocessed Data\test_files",
     range_min = 650,
     range_max = 4000,
     export_xlsx = "FILENAME.xlsx",
