@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 
+
+
 from openspi.metadata import _xlsx_metadata
 
 def count_files(folder_path):
@@ -282,7 +284,7 @@ def empty_wells_count(df):
     return count
 
 
-def matches_checked_sheet(excel_path):
+def matches_checked_sheet(excel_path, nrel = False, n = 5):
     """
     Adds a 'Notes' sheet with the number of nonpolymer matches and empty wells
 
@@ -290,6 +292,12 @@ def matches_checked_sheet(excel_path):
     ----------
     excel_path : str
         The full path to an .xlsx file.
+    nrel : bool
+        If True, the function will also check polymer count of the first well
+        individually.
+    n : int
+        The number of top matches for each file. Equal to `top_n` in
+        `openspi_main`. Default is 5.
 
     Returns
     -------
@@ -301,14 +309,41 @@ def matches_checked_sheet(excel_path):
     # Open the Summary and Updated Summary sheets into a pandas dataframe
     xlsx_file = pd.ExcelFile(excel_path)
     df_summary = pd.read_excel(xlsx_file, "Summary")
+    sum_len = len(df_summary)
+
     df_updated_summary = pd.read_excel(xlsx_file, "Updated Summary")
+    upd_sum_len = len(df_updated_summary)
 
     poly_count_init, nonpoly_count_init, empty_count_init = count_matches(df_summary)
 
     poly_count_upd, nonpoly_count_upd, empty_count_upd = count_matches(df_updated_summary)
 
-    data = [['Initial', poly_count_init, nonpoly_count_init, empty_count_init], ['Updated', poly_count_upd, nonpoly_count_upd, empty_count_upd]]
-    df = pd.DataFrame(data, columns=['-', 'Polymer', 'Nonpolymer', 'Empty Wells'])
+    data = [['Initial', poly_count_init, nonpoly_count_init, empty_count_init, sum_len], ['Updated', poly_count_upd, nonpoly_count_upd, empty_count_upd, upd_sum_len]]
+    
+    if nrel == True:
+        # Open the Subsequent Matches sheet into a pandas dataframe
+        xlsx_file = pd.ExcelFile(excel_path)
+        df_subseq = pd.read_excel(xlsx_file, "Subsequent Matches")
+
+        df_first_well = df_subseq.head(n)
+
+        poly_count, nonpoly_count, empty_count = count_matches(df_first_well)
+
+        first_well_data = ['First Well', poly_count, nonpoly_count, empty_count, n]
+        
+        data.append(first_well_data)
+
+
+    # Pull version num from __version__.py
+    from openspi.__version__ import __version__
+
+    # package_info = [['-', '-', '-', '-', '-'], ["Processed with openspi v" + __version__, ' ', ' ', ' ', ' ']]
+    # data.append(package_info)[0]
+    # data.append(package_info)[1]
+
+    data.append(["Processed with openspi v" + __version__])
+
+    df = pd.DataFrame(data, columns=['-', 'Polymer', 'Nonpolymer', 'Empty Wells', 'Sample Size'])
 
     print(df)
 

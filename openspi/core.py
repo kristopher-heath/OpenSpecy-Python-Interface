@@ -6,6 +6,7 @@ import shutil
 import rpy2.robjects as ro
 import rpy2.robjects.pandas2ri as pandas2ri
 
+from .nrel import nrel_delete_sp, nrel_autoname
 from .metadata import _xlsx_metadata
 from .utils import count_files, reformat_path, save_df_to_excel, matches_checked_sheet, subsequent_matches_checked, list_to_df_to_sheet
 
@@ -47,7 +48,7 @@ def process_csv(file_path, range_min, range_max):
         # Ensure the file is a .csv
         if file_path.endswith(".csv") == False:
             print(
-                "Incompatible file format detected. This function only accepts .csv files. Please remove all other file types. Quitting now."
+                f"Incompatible file format detected: {os.path.basename(file_path)}\nThis function only accepts .csv files. Please remove all other file types. Quitting now."
             )
             sys.exit()
 
@@ -148,7 +149,7 @@ def process_csv_folder(folder_path, range_min, range_max):
     return zipped_file_path
 
 
-def r_script(file_path, range_min, range_max):
+def r_script(file_path, range_min, range_max, top_n):
     """
     Processes spectra through the OpenSpecy R package and returns a dataframe
     with the library matches and other data
@@ -164,6 +165,8 @@ def r_script(file_path, range_min, range_max):
     range_max : int
         The maximum wavenumber of the desired spectral range. Note that this
         value can be less than the actual maximum if cropping is desired.
+    top_n : int
+        The top *n* highest matches desired. Recommended values: 1 <= n >= 10
 
     Returns
     -------
@@ -179,6 +182,7 @@ def r_script(file_path, range_min, range_max):
     ro.globalenv["file_path"] = file_path
     ro.globalenv["range_min"] = range_min
     ro.globalenv["range_max"] = range_max
+    ro.globalenv["py_top_n"] = top_n
 
 
     print("Executing R script...")
@@ -234,7 +238,7 @@ def r_script(file_path, range_min, range_max):
 
     # Compare the processed spectra to those in the library and identify the
     # top 5 matches for each spectrum
-    top_matches <- match_spec(files_processed, library = ftir_lib, na.rm = T, top_n = 5,
+    top_matches <- match_spec(files_processed, library = ftir_lib, na.rm = T, top_n = py_top_n,
                              add_library_metadata = "sample_name",
                              add_object_metadata = "col_id")
 
@@ -253,7 +257,7 @@ def r_script(file_path, range_min, range_max):
     return df_top_matches
 
 
-def sort_export(df, excel_path, top_n):
+def sort_export(df, excel_path, top_n, nrel = False):
     """
     Sorts the dataframe exported from the R script and rearranges it into a
     more presentable format. Exports an Excel file.
@@ -265,7 +269,12 @@ def sort_export(df, excel_path, top_n):
     excel_path : str
         The full path to an .xlsx file.
     top_n : int
-        The number of top matches for each file
+        The number of top matches for each file. Equal to `top_n` in
+        `openspi_main`. Default is 5.
+    nrel : Bool
+        Adds an extra row regarding first well information to the "Matches
+        Checked sheet."
+
 
     Returns
     -------
@@ -336,12 +345,11 @@ def sort_export(df, excel_path, top_n):
     list_to_df_to_sheet(df_full_list, column_names, excel_path, "Subsequent Matches")
 
     # Add a notes sheet to the Excel workbook
-    # notes_sheet(excel_path)
-    matches_checked_sheet(excel_path)
+    matches_checked_sheet(excel_path, nrel = nrel, n = top_n)
 
 
 
-def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_dir = None):
+def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_dir = None, nrel_version = False):
     """
     A complete function for spectral pre-processing, processing through the
     OpenSpecy library in R, and configuring/processing the outputted data into
@@ -369,13 +377,21 @@ def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_d
         The desired location of the outputted `.xlsx` file. Optional; if not
         specified, the file will be saved in the parent directory of the source
         file/folder.
+    nrel_version : bool
+        If True, the function will use the NREL version of OpenSpecy, which
+        has two differences: 1) all .sp files present in the folder will be
+        deleted, and 2) the outputted file will be named in a specific way
+        according to the files contained within.
+    top_n : int 
+        The top *n* highest matches desired. Recommended values: 1 <= n >= 10.
+        Not yet supported.
 
     Returns
     -------
     None.
 
     """
-
+    top_n = 5
     # If export_xlsx is specified, check that it includes '.xlsx'
     if not export_xlsx == None:
         if not '.xlsx' in export_xlsx:
@@ -384,20 +400,31 @@ def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_d
         # Check if source_path is a folder or a file, and determine the export
         # name accordingly
         if os.path.isdir(source_path):
-            export_xlsx = os.path.basename(source_path) + '.xlsx'
+
+            # Generate a name based on the source_path
+            if not nrel_version == True:
+                export_xlsx = os.path.basename(source_path) + '.xlsx'
+
+            else:
+                # If nrel_version is True, use the nrel_autoname function to generate a name
+                export_xlsx = nrel_autoname(source_path)
+
         else:
-            export_xlsx = os.path.basename(source_path).replace('.csv', '.xlsx')
+            # If the source_path is a file, use the file name to generate the export name
+            export_xlsx = 'TopMatches' + os.path.basename(source_path).replace('.csv', '.xlsx')
 
     # If export_dir is specified, check if it exists. If not, create it.
     if not export_dir == None:
         if not os.path.exists(export_dir):
             os.makedirs(export_dir)
-
-        target_file_path = os.path.join(export_dir, export_xlsx)
+            print(f"Directory {export_dir} created.")
 
     # If export_dir is not specified, save the file in the same directory as source_path
     else:
-        target_file_path = os.path.join(os.path.dirname(source_path), export_xlsx)
+        export_dir = os.path.dirname(source_path)
+
+    target_file_path = os.path.join(export_dir, export_xlsx)
+
 
     # Check if the target file already exists. If it does, ask the user if they want to overwrite.
     if os.path.exists(target_file_path):
@@ -413,6 +440,9 @@ def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_d
 
     # Check if the source_path is a folder or a file
     if os.path.isdir(source_path):
+
+        if nrel_version == True:
+            nrel_delete_sp(source_path)
 
         # If the folder contains multiple files, process them all and create a zip folder
         if count_files(source_path) > 1:
@@ -431,7 +461,9 @@ def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_d
     # If the source_path is a file, process it.
     else:
         processed_path = process_csv(source_path, range_min, range_max)
-    
-    df_top_matches = r_script(processed_path, range_min, range_max)
-    sort_export(df_top_matches, target_file_path, 5)
+
+    df_top_matches = r_script(processed_path, range_min, range_max, top_n)
+    sort_export(df_top_matches, target_file_path, 5, nrel = nrel_version)
+
+
     _xlsx_metadata(target_file_path)
