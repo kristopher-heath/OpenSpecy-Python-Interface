@@ -1,6 +1,6 @@
 # **ATTENTION: THIS PACKAGE IS IN EARLY TESTING**
 
-This should be usable, Please contact me at [kheath@nrel.gov](<mailto:kheath@nrel.gov>) if you would like to assist with testing.
+This should be usable, please contact me at [kheath@.gov](<mailto:kheath@nrel.gov>) if you would like to assist with testing. Please open an issue or contact me directly if you encounter any problems.
 
 ## Contents
 
@@ -34,9 +34,9 @@ The OpenSpecy R package, however, can process all top *n* matches consecutively 
 
 Thus was the beginning of the **OpenSpecy Python Interface** (aka **openspi**), an all-in-one spectral data processing package. It contains several functions to 1) preprocess data to ensure it will be readable by the OpenSpecy R package, 2) call on R to execute a script that uses OpenSpecy, and 3) post-process the data to make a concise, readable Excel sheet containing all the data. It can also be utilized as a comprehensive script that processes your files from start to finish, reducing the need for prior coding knowledge.
 
-[GitHub page here](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface)
+[GitHub page here](https://github.com/kristopher-heath/OpenSpecy-Python-Interface)
 
-[TestPyPI page here](https://test.pypi.org/project/openspi/)
+[PyPI page here](https://pypi.org/project/openspi/)
 
 ---
 
@@ -84,7 +84,7 @@ R.home()
 * Run the following in the environment terminal:
 
 ```bash
-python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple openspi
+pip install openspi
 ```
 
 * Run Python in the IDE of your choice
@@ -94,7 +94,7 @@ python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-ur
 
 ## Usage & Documentation
 
-This tool accepts a folder containing .csv files, which must be structured as outlined in the test_files folder:
+This tool accepts either 1) a single .csv file or 2) a folder containing *n* .csv files, which must be structured as outlined in the test_files folder:
 
 ```bash
 ├── test_files
@@ -125,7 +125,7 @@ openspi_main(
     range_max = 4000,
     export_xlsx = "FILENAME.xlsx",
     export_dir = r"C:\Users\USER\Documents\OpenSpecy Exports"
-    nrel_version = False)
+    _version = False)
 ```
 
 Please see [https://openspecy-python-interface.readthedocs.io/en/stable/](https://openspecy-python-interface.readthedocs.io/en/stable/) for all available functions.
@@ -178,7 +178,7 @@ This is a step-by-step walkthrough for users who aren't as familiar with using R
 install.packages('OpenSpecy', repos='http://cran.us.r-project.org')
 ```
 
-![install openspecy in R](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/install_openspecy.png "install_openspecy")
+![install openspecy in R](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/install_openspecy.png "install_openspecy")
 
 3. Once OpenSpecy and its dependencies are installed, run the following code in the console one line at a time:
 
@@ -189,7 +189,7 @@ get_lib()
 
 * This will download the 7 spectral libraries that are available in OpenSpecy. These libraries will be kept on your hard drive, so after initial installation, this only needs to be done when the libraries are updated.
 
-![get libraries](https://github.com/KrisHeathNREL/OpenSpecy-Python-Interface/blob/main/instruction_pics/get_lib.png "get_lib")
+![get libraries](https://github.com/kristopher-heath/OpenSpecy-Python-Interface/blob/main/instruction_pics/get_lib.png "get_lib")
 
 4. Run this line:
 
