@@ -1,6 +1,4 @@
-# **ATTENTION: THIS PACKAGE IS IN EARLY TESTING**
-
-This should be usable, please contact me at [kheath@.gov](<mailto:kheath@nrel.gov>) if you would like to assist with testing. Please open an issue or contact me directly if you encounter any problems.
+Please open an issue or contact me directly at [kheath@nrel.gov](<mailto:kheath@nrel.gov>) if you encounter any problems.
 
 ## Contents
 
