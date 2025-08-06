@@ -149,7 +149,14 @@ def process_csv_folder(folder_path, range_min, range_max):
     return zipped_file_path
 
 
-def r_script(file_path, range_min, range_max, top_n = 5):
+def r_script(
+        file_path,
+        range_min,
+        range_max,
+        adj_intens: bool = False,
+        adj_intens_type: str = 'none',
+        subtract_baseline: bool = False,
+        top_n: int = 5):
     """
     Processes spectra through the OpenSpecy R package and returns a dataframe
     with the library matches and other data
@@ -168,7 +175,15 @@ def r_script(file_path, range_min, range_max, top_n = 5):
     top_n : int
         The top *n* highest matches desired. Recommended values: 1 <= n >= 10
         (Not yet supported)
-
+    adj_intens : bool
+        If True, the function will adjust the intensity of the spectra using
+        the OpenSpecy package.
+    adj_intens_type : str
+        The type of intensity adjustment to be made. Options are 'none',
+        'transmittance', or 'absorbance'
+    subtract_baseline : bool
+        If True, the function will subtract the baseline from the spectra using
+        IModPolyFit from the OpenSpecy package.
     Returns
     -------
     df_top_matches : dataframe
@@ -184,6 +199,9 @@ def r_script(file_path, range_min, range_max, top_n = 5):
     ro.globalenv["range_min"] = range_min
     ro.globalenv["range_max"] = range_max
     ro.globalenv["py_top_n"] = top_n
+    ro.globalenv["py_adj_intens"] = adj_intens
+    ro.globalenv["py_adj_intens_type"] = adj_intens_type
+    ro.globalenv["py_subtr_baseline"] = subtract_baseline
 
 
     print("Executing R script...")
@@ -219,15 +237,15 @@ def r_script(file_path, range_min, range_max, top_n = 5):
     files_processed <- process_spec(
       files,
       active = TRUE,
-      adj_intens = FALSE,
-      adj_intens_args = list(type = "none"),
+      adj_intens = py_adj_intens,
+      adj_intens_args = list(type = py_adj_intens_type),
       conform_spec = FALSE,
       conform_spec_args = list(range = ftir_lib$wavenumber, res = NULL, type = "interp"),
       restrict_range = TRUE,
       restrict_range_args = list(min = range_min, max = range_max),
       flatten_range = FALSE,
       flatten_range_args = list(min = 2200, max = 2420),
-      subtr_baseline = FALSE,
+      subtr_baseline = py_subtr_baseline,
       subtr_baseline_args = list(type = "polynomial", degree = 8, raw = FALSE, baseline =
                                    NULL),
       smooth_intens = TRUE,
@@ -350,7 +368,16 @@ def sort_export(df, excel_path, top_n, nrel = False):
 
 
 
-def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_dir = None, nrel_version = False):
+def openspi_main(
+        source_path,
+        range_min,
+        range_max,
+        export_xlsx = None,
+        export_dir = None,
+        nrel_version = False,
+        adj_intens = False,
+        adj_intens_type = 'none',
+        subtr_baseline = False):
     """
     A complete function for spectral pre-processing, processing through the
     OpenSpecy library in R, and configuring/processing the outputted data into
@@ -383,9 +410,18 @@ def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_d
         has two differences: 1) all .sp files present in the folder will be
         deleted, and 2) the outputted file will be named in a specific way
         according to the files contained within.
-    top_n : int 
+    top_n : int
         The top *n* highest matches desired. Recommended values: 1 <= n >= 10.
         Not yet supported.
+    adj_intens : bool
+        If True, the function will adjust the intensity of the spectra using
+        the OpenSpecy package.
+    adj_intens_type : str
+        The type of intensity adjustment to be made. Options are 'none',
+        'transmittance', or 'absorbance'
+    subtr_baseline : bool
+        If True, the function will subtract the baseline from the spectra using
+        IModPolyFit from the OpenSpecy package.
 
     Returns
     -------
@@ -463,7 +499,7 @@ def openspi_main(source_path, range_min, range_max, export_xlsx = None, export_d
     else:
         processed_path = process_csv(source_path, range_min, range_max)
 
-    df_top_matches = r_script(processed_path, range_min, range_max, top_n)
+    df_top_matches = r_script(processed_path, range_min, range_max, adj_intens, adj_intens_type, subtr_baseline, top_n)
     sort_export(df_top_matches, target_file_path, 5, nrel = nrel_version)
 
 
